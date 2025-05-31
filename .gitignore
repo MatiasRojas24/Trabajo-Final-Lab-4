@@ -27,7 +27,7 @@ Thumbs.db
 *.njsproj
 *.sln
 
-# Optional: if you use coverage tools like Jest
+# Optional:if you use coverage tools like Jest
 coverage/
 
 # Optional: if you use Next.js or similar
