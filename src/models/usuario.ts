@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../lib/prisma";
 
-const prisma = new PrismaClient();
-
-export default prisma.usuario;
+export const prismaUsuario = prisma.usuario;

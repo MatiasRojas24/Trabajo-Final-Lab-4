@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { comparePasswords, hashPassword } from "../services/passwordService";
-import prisma from '../models/usuario'
+import { prismaUsuario } from '../models/usuario'
 import { generateToken } from "../services/authService";
 
 export const registerCliente = async (req: Request, res: Response): Promise<void> => {
@@ -25,7 +25,7 @@ export const registerCliente = async (req: Request, res: Response): Promise<void
         }
         const hashedPassword = await hashPassword(password)
 
-        const user = await prisma.create(
+        const user = await prismaUsuario.create(
             {
                 data: {
                     email,
@@ -68,7 +68,7 @@ export const registerAdmin = async (req: Request, res: Response): Promise<void> 
 
         const hashedPassword = await hashPassword(password)
 
-        const user = await prisma.create(
+        const user = await prismaUsuario.create(
             {
                 data: {
                     email,
@@ -104,7 +104,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             return
         }
 
-        const user = await prisma.findUnique({ where: { email } })
+        const user = await prismaUsuario.findUnique({ where: { email } })
         if (!user) {
             res.status(404).json({ error: 'Usuario no encontrado' })
             return

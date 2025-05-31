@@ -1,130 +1,141 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Rol {
-    ADMIN
-    CLIENTE
+  ADMIN
+  CLIENTE
 }
+
 model Usuario {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    nombre String
-    password String
-    rol Rol
-    email String @unique
-    dni String
-    direcciones Direccion[] @relation("UsuariosDirecciones")
+  id          String        @id @default(uuid())
+  habilitado  Boolean       @default(true)
+  nombre      String
+  password    String
+  rol         Rol
+  email       String        @unique
+  dni         String
+  direcciones Direccion[]   @relation("UsuariosDirecciones")
+  OrdenCompra OrdenCompra[]
 }
 
 model Catalogo {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    nombre String
+  id         String     @id @default(uuid())
+  habilitado Boolean    @default(true)
+  nombre     String
+  Producto   Producto[]
 }
 
 model Descuento {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    fechaInicio String
-    fechaCierre String
-    descuento Int
+  id          String   @id @default(uuid())
+  habilitado  Boolean  @default(true)
+  fechaInicio String
+  fechaCierre String
+  descuento   Int
+  Precio      Precio[]
 }
 
 model DetalleProducto {
-    id         String   @id @default(uuid())
-    habilitado     Boolean  @default(true)
-    talleId    String
-    talle      Talle    @relation(fields: [talleId], references: [id])
-    productoId String
-    producto   Producto @relation(fields: [productoId], references: [id])
-    stock      Int
-    color      String
+  id                 String               @id @default(uuid())
+  habilitado         Boolean              @default(true)
+  talleId            String
+  talle              Talle                @relation(fields: [talleId], references: [id])
+  productoId         String
+  producto           Producto             @relation(fields: [productoId], references: [id])
+  stock              Int
+  color              String
+  Imagen             Imagen[]
+  OrdenCompraDetalle OrdenCompraDetalle[]
+  Precio             Precio[]
 }
 
-
 model Direccion {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    localidad String
-    pais String
-    provincia String
-    departamento String
-    usuarios Usuario[] @relation("UsuariosDirecciones")
+  id           String        @id @default(uuid())
+  habilitado   Boolean       @default(true)
+  localidad    String
+  pais         String
+  provincia    String
+  departamento String
+  usuarios     Usuario[]     @relation("UsuariosDirecciones")
+  OrdenCompra  OrdenCompra[]
 }
 
 model Imagen {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    publicId          String
-    url               String
-    detalleProductoId String
-    detalleProducto   DetalleProducto @relation(fields: [detalleProductoId], references: [id])
+  id                String          @id @default(uuid())
+  habilitado        Boolean         @default(true)
+  publicId          String
+  url               String
+  detalleProductoId String
+  detalleProducto   DetalleProducto @relation(fields: [detalleProductoId], references: [id])
 }
 
 model OrdenCompra {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    total Float
-    descuento Int
-    fechaCompra String
-    usuarioId String
-    usuario Usuario @relation(fields: [usuarioId], references: [id])
-    direccionId String
-    direccion Direccion @relation(fields: [direccionId], references: [id])
+  id                 String               @id @default(uuid())
+  habilitado         Boolean              @default(true)
+  total              Float
+  descuento          Int
+  fechaCompra        String
+  usuarioId          String
+  usuario            Usuario              @relation(fields: [usuarioId], references: [id])
+  direccionId        String
+  direccion          Direccion            @relation(fields: [direccionId], references: [id])
+  OrdenCompraDetalle OrdenCompraDetalle[]
 }
 
 model OrdenCompraDetalle {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    ordenCompraId String
-    ordenCompra OrdenCompra @relation(fields: [ordenCompraId], references: [id])
-    detalleProductoId String
-    detalleProducto DetalleProducto @relation(fields: [detalleProductoId], references: [id])
-    cantidad Int
-    subtotal Float
+  id                String          @id @default(uuid())
+  habilitado        Boolean         @default(true)
+  ordenCompraId     String
+  ordenCompra       OrdenCompra     @relation(fields: [ordenCompraId], references: [id])
+  detalleProductoId String
+  detalleProducto   DetalleProducto @relation(fields: [detalleProductoId], references: [id])
+  cantidad          Int
+  subtotal          Float
 }
 
 model Precio {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    precioCompra Float
-    precioVenta Float
-    detalleProductoId String
-    detalleProducto DetalleProducto @relation(fields: [detalleProductoId], references: [id])
-    descuentoId String
-    descuento Descuento @relation(fields: [descuentoId], references: [id])
+  id                String          @id @default(uuid())
+  habilitado        Boolean         @default(true)
+  precioCompra      Float
+  precioVenta       Float
+  detalleProductoId String
+  detalleProducto   DetalleProducto @relation(fields: [detalleProductoId], references: [id])
+  descuentoId       String
+  descuento         Descuento       @relation(fields: [descuentoId], references: [id])
 }
 
 enum TipoProducto {
-    ZAPATILLA
-    REMERA
-    PANTALON
-    CAMPERA
+  ZAPATILLA
+  REMERA
+  PANTALON
+  CAMPERA
 }
+
 enum Sexo {
-    HOMBRE
-    MUJER
-    OTRO
+  HOMBRE
+  MUJER
+  OTRO
 }
 
 model Producto {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    nombre String
-    tipoProducto TipoProducto
-    sexo Sexo
-    catalogoId
-    catalogo Catalogo @relation(fields: [catalogoId], references: [id])
+  id              String            @id @default(uuid())
+  habilitado      Boolean           @default(true)
+  nombre          String
+  tipoProducto    TipoProducto
+  sexo            Sexo
+  catalogoId      String
+  catalogo        Catalogo          @relation(fields: [catalogoId], references: [id])
+  DetalleProducto DetalleProducto[]
 }
 
 model Talle {
-    id String @id @default(uuid())
-    habilitado Boolean @default(true)
-    talle Int
+  id              String            @id @default(uuid())
+  habilitado      Boolean           @default(true)
+  talle           Int
+  DetalleProducto DetalleProducto[]
 }
