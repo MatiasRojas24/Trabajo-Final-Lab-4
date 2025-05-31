@@ -34,5 +34,3 @@ coverage/
 .next/
 out/
 
-# Optional: if you use Prisma
-.prisma/
