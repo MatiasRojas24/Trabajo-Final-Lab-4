@@ -148,29 +148,50 @@ export const deleteDireccion = async (req: Request, res: Response): Promise<void
 }
 
 export const addUsuariosToDireccion = async (req: Request, res: Response): Promise<void> => {
-    const { direccionId } = req.params
-    const { usuarioIds } = req.body
+    const { direccionId } = req.params;
+    const { usuarioIds } = req.body;
+
     try {
         const direccion = await prismaDireccion.findUnique({
             where: { id: direccionId }
-        })
+        });
+
         if (!direccion) {
-            res.status(404).json({ error: 'Dirección no encontrada' })
-            return
+            res.status(404).json({ error: 'Dirección no encontrada' });
+            return;
         }
+
+        const usuariosExistentes = await prismaUsuario.findMany({
+            where: {
+                id: { in: usuarioIds }
+            },
+            select: { id: true }
+        });
+
+        const idsExistentes = usuariosExistentes.map(u => u.id);
+        const idsInvalidos = usuarioIds.filter((id: string) => !idsExistentes.includes(id));
+
+        if (idsInvalidos.length > 0) {
+            res.status(400).json({ error: `Los siguientes usuarios no existen: ${idsInvalidos.join(', ')}` });
+            return;
+        }
+
         await prismaDireccion.update({
             where: { id: direccionId },
             data: {
                 usuarios: {
-                    connect: usuarioIds.map((id: string) => ({ id }))
+                    connect: idsExistentes.map((id: string) => ({ id }))
                 }
             }
-        })
-        res.status(200).json({ mensaje: 'Usuarios agregados a la dirección correctamente' })
+        });
+
+        res.status(200).json({ mensaje: 'Usuarios agregados a la dirección correctamente' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al agregar usuarios a la dirección' })
+        console.error(error);
+        res.status(500).json({ error: 'Error al agregar usuarios a la dirección' });
     }
-}
+};
+
 
 export const getDireccionesByUserId = async (req: Request, res: Response): Promise<void> => {
     const { usuarioId } = req.params;
