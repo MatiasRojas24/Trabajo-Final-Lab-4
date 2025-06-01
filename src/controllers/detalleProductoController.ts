@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import detalleProductoPrisma from "../models/detalleProducto";
 import { Prisma, Sexo, TipoProducto } from "@prisma/client";
-import tallePrisma from '../models/talle'
-import productoPrisma from '../models/producto'
+import prisma from "../lib/prisma";
 
 
 export const createDetalleProducto = async (req: Request, res: Response): Promise<void> => {
@@ -14,7 +12,7 @@ export const createDetalleProducto = async (req: Request, res: Response): Promis
             return;
         }
 
-        const nuevoDetalleProducto = await detalleProductoPrisma.create({
+        const nuevoDetalleProducto = await prisma.detalleProducto.create({
             data: {
                 stock,
                 color,
@@ -52,7 +50,7 @@ export const createDetalleProducto = async (req: Request, res: Response): Promis
 
 export const getDetallesProductos = async (req: Request, res: Response): Promise<void> => {
     try {
-        const detallesProductos = await detalleProductoPrisma.findMany({
+        const detallesProductos = await prisma.detalleProducto.findMany({
             include: {
                 talle: true,
                 producto: true,
@@ -72,7 +70,7 @@ export const getDetalleProductoById = async (req: Request, res: Response): Promi
     const { id } = req.params;
 
     try {
-        const detalleProducto = await detalleProductoPrisma.findUnique({
+        const detalleProducto = await prisma.detalleProducto.findUnique({
             where: {
                 id,
             },
@@ -98,7 +96,7 @@ export const getDetalleProductoById = async (req: Request, res: Response): Promi
 
 export const getEnabledDetallesProductos = async (req: Request, res: Response): Promise<void> => {
     try {
-        const enabled = await detalleProductoPrisma.findMany({
+        const enabled = await prisma.detalleProducto.findMany({
             where: { habilitado: true },
             include: {
                 talle: true,
@@ -120,7 +118,7 @@ export const updateDetalleProducto = async (req: Request, res: Response): Promis
     const { stock, color, imagenIds, precioIds, ordenCompraDetalleIds } = req.body;
 
     try {
-        const existingDetalleProducto = await detalleProductoPrisma.findUnique({
+        const existingDetalleProducto = await prisma.detalleProducto.findUnique({
             where: { id }
         });
 
@@ -129,7 +127,7 @@ export const updateDetalleProducto = async (req: Request, res: Response): Promis
             return;
         }
 
-        const updatedDetalleProducto = await detalleProductoPrisma.update({
+        const updatedDetalleProducto = await prisma.detalleProducto.update({
             where: { id },
             data: {
                 stock,
@@ -171,14 +169,14 @@ export const deleteDetalleProducto = async (req: Request, res: Response): Promis
     const { id } = req.params;
 
     try {
-        const existing = await detalleProductoPrisma.findUnique({ where: { id } });
+        const existing = await prisma.detalleProducto.findUnique({ where: { id } });
 
         if (!existing) {
             res.status(404).json({ message: 'Detalle de producto no encontrado' });
             return;
         }
 
-        await detalleProductoPrisma.delete({ where: { id } });
+        await prisma.detalleProducto.delete({ where: { id } });
 
         res.status(200).json({ message: 'Detalle de producto eliminado correctamente' });
     } catch (error) {
@@ -191,7 +189,7 @@ export const toggleHabilitadoDetProd = async (req: Request, res: Response): Prom
   const { id } = req.params;
 
   try {
-    const existingDetalleProducto = await detalleProductoPrisma.findUnique({
+    const existingDetalleProducto = await prisma.detalleProducto.findUnique({
       where: { id }
     });
 
@@ -200,7 +198,7 @@ export const toggleHabilitadoDetProd = async (req: Request, res: Response): Prom
       return;
     }
 
-    const detalleProductoActualizado = await detalleProductoPrisma.update({
+    const detalleProductoActualizado = await prisma.detalleProducto.update({
       where: { id },
       data: {
         habilitado: !existingDetalleProducto.habilitado
@@ -221,7 +219,7 @@ export const addTalleToDetalleProducto = async (req: Request, res: Response) => 
 
   try {
     // Verificamos existencia del talle
-    const talle = await tallePrisma.findUnique({
+    const talle = await prisma.talle.findUnique({
       where: { id: talleId },
     });
 
@@ -231,7 +229,7 @@ export const addTalleToDetalleProducto = async (req: Request, res: Response) => 
     }
 
     // Verificamos existencia del detalleProducto
-    const detalleProducto = await detalleProductoPrisma.findUnique({
+    const detalleProducto = await prisma.detalleProducto.findUnique({
       where: { id: dpId },
     });
 
@@ -241,7 +239,7 @@ export const addTalleToDetalleProducto = async (req: Request, res: Response) => 
     }
 
     // Asociamos el talle
-    const updatedDetalleProducto = await detalleProductoPrisma.update({
+    const updatedDetalleProducto = await prisma.detalleProducto.update({
       where: { id: dpId },
       data: { talleId },
       include: {
@@ -264,7 +262,7 @@ export const getDetalleProductoByTalle = async (req: Request, res: Response): Pr
     const { talleId } = req.params;
 
     try {
-        const talle = await tallePrisma.findUnique({
+        const talle = await prisma.talle.findUnique({
             where: { id: talleId },
             include: {
                 DetalleProducto: true
@@ -289,7 +287,7 @@ export const addProductoToDetalleProducto = async (req: Request, res: Response):
 
     try {
     // Verificamos existencia del producto
-    const producto = await productoPrisma.findUnique({
+    const producto = await prisma.producto.findUnique({
       where: { id: productoId },
     });
 
@@ -299,7 +297,7 @@ export const addProductoToDetalleProducto = async (req: Request, res: Response):
     }
 
     // Verificamos existencia del detalleProducto
-    const detalleProducto = await detalleProductoPrisma.findUnique({
+    const detalleProducto = await prisma.detalleProducto.findUnique({
       where: { id: dpId },
     });
 
@@ -309,7 +307,7 @@ export const addProductoToDetalleProducto = async (req: Request, res: Response):
     }
 
     // Asociamos el producto
-    const updatedDetalleProducto = await detalleProductoPrisma.update({
+    const updatedDetalleProducto = await prisma.detalleProducto.update({
       where: { id: dpId },
       data: { productoId },
       include: {
@@ -332,7 +330,7 @@ export const getDetalleProductoByProducto = async (req: Request, res: Response):
     const { productoId } = req.params;
 
     try {
-        const producto = await productoPrisma.findUnique({
+        const producto = await prisma.producto.findUnique({
             where: { id: productoId },
             include: {
                 DetalleProducto: true
@@ -355,7 +353,7 @@ export const listarProductosFiltrados = async (req: Request, res: Response) => {
   const { talleId, tipoProducto, sexo, precioMin, precioMax } = req.query;
 
   try {
-    const productos = await productoPrisma.findMany({
+    const productos = await prisma.producto.findMany({
       where: {
         habilitado: true,
         tipoProducto: tipoProducto && Object.values(TipoProducto).includes(tipoProducto as TipoProducto)

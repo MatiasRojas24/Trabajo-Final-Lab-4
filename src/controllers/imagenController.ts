@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import imagenPrisma from '../models/imagen'
+
 import { Prisma } from "@prisma/client";
 import { nanoid } from "nanoid";
-import detalleProductoPrisma from "../models/detalleProducto"
+import prisma from "../lib/prisma";
 
 export const createImagen = async (req: Request, res: Response): Promise<void> => {
     const { url } = req.body
@@ -16,7 +16,7 @@ export const createImagen = async (req: Request, res: Response): Promise<void> =
             return
         }
 
-        const nuevaImagen = await imagenPrisma.create({
+        const nuevaImagen = await prisma.imagen.create({
             data: {
                 publicId: publicIdGenerated,
                 url,
@@ -32,7 +32,7 @@ export const createImagen = async (req: Request, res: Response): Promise<void> =
 
 export const getImagenes = async (req: Request, res: Response): Promise<void> => {
     try {
-        const imagenes = await imagenPrisma.findMany({ include: { detalleProducto: true } });
+        const imagenes = await prisma.imagen.findMany({ include: { detalleProducto: true } });
         res.status(200).json(imagenes);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las imagenes' });
@@ -41,7 +41,7 @@ export const getImagenes = async (req: Request, res: Response): Promise<void> =>
 
 export const getEnabledImagenes = async (req: Request, res: Response): Promise<void> => {
     try {
-        const enabled = await imagenPrisma.findMany({
+        const enabled = await prisma.imagen.findMany({
             where: { habilitado: true }
         });
 
@@ -55,7 +55,7 @@ export const getImagenById = async (req: Request, res: Response): Promise<void> 
     const { id } = req.params
 
     try {
-        const imagen = await imagenPrisma.findUnique({
+        const imagen = await prisma.imagen.findUnique({
             where: { id: id },
             include: {
                 detalleProducto: true
@@ -72,14 +72,14 @@ export const toggleEnableImagen = async (req: Request, res: Response): Promise<v
     const { id } = req.params
 
     try {
-        const imagen = await imagenPrisma.findUnique({ where: { id: id } })
+        const imagen = await prisma.imagen.findUnique({ where: { id: id } })
 
         if (!imagen) {
             res.status(404).json({ message: "Imagen no encontrada" })
             return;
         }
 
-        await imagenPrisma.update({
+        await prisma.imagen.update({
             where: { id: id },
             data: { habilitado: !imagen.habilitado }
         })
@@ -96,7 +96,7 @@ export const updateImagen = async (req: Request, res: Response) => {
 
   try {
     // Validar si la imagen existe
-    const imagenExistente = await imagenPrisma.findUnique({
+    const imagenExistente = await prisma.imagen.findUnique({
       where: { id },
     });
 
@@ -106,7 +106,7 @@ export const updateImagen = async (req: Request, res: Response) => {
     }
 
     // Actualizar
-    const imagenActualizada = await imagenPrisma.update({
+    const imagenActualizada = await prisma.imagen.update({
       where: { id },
       data: {
         publicId: publicId ?? imagenExistente.publicId,
@@ -130,7 +130,7 @@ export const deleteImagen = async (req: Request, res: Response) => {
     const { id } = req.params
 
     try {
-        await imagenPrisma.delete({
+        await prisma.imagen.delete({
             where: { id: id }
         })
 
@@ -146,7 +146,7 @@ export const addDetalleProductoToImagen = async (req: Request, res: Response) =>
 
     try {
         // Verificamos existencia del detalle producto
-        const detalleProducto = await detalleProductoPrisma.findUnique({
+        const detalleProducto = await prisma.detalleProducto.findUnique({
             where: { id: detalleProductoId },
         });
 
@@ -156,7 +156,7 @@ export const addDetalleProductoToImagen = async (req: Request, res: Response) =>
         }
 
         // Verificamos existencia de la imagen
-        const imagen = await imagenPrisma.findUnique({
+        const imagen = await prisma.imagen.findUnique({
             where: { id: imgId },
         });
 
@@ -166,7 +166,7 @@ export const addDetalleProductoToImagen = async (req: Request, res: Response) =>
         }
 
         // Asociamos el detalle producto
-        const imagenActualizada = await imagenPrisma.update({
+        const imagenActualizada = await prisma.imagen.update({
             where: { id: imgId },
             data: { detalleProductoId },
             include: {
@@ -184,7 +184,7 @@ export const getImagenByDetalleProductoId = async (req: Request, res: Response) 
     const { dpId } = req.params
 
     try {
-        const detalleProducto = await detalleProductoPrisma.findUnique({
+        const detalleProducto = await prisma.detalleProducto.findUnique({
             where: { id: dpId },
             include: { Imagen: true }
         })

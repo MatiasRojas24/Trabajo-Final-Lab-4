@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import descuentoPrisma from "../models/descuento";
+import prisma from "../lib/prisma";
 
 export const createDescuento = async (req: Request, res: Response): Promise<void> => {
   const { fechaInicio, fechaCierre, descuento, precioIds } = req.body;
@@ -14,7 +14,7 @@ export const createDescuento = async (req: Request, res: Response): Promise<void
       return;
     }
 
-    const nuevoDescuento = await descuentoPrisma.create({
+    const nuevoDescuento = await prisma.descuento.create({
       data: {
         fechaInicio,
         fechaCierre,
@@ -39,7 +39,7 @@ export const createDescuento = async (req: Request, res: Response): Promise<void
 
 export const getAllDescuentos = async (req: Request, res: Response): Promise<void> => {
     try {
-        const descuentos = await descuentoPrisma.findMany()
+        const descuentos = await prisma.descuento.findMany()
 
         res.status(200).json(descuentos)
     } catch (error) {
@@ -51,7 +51,7 @@ export const getDescuentoById = async (req: Request, res: Response): Promise<voi
     const { id } = req.params
 
     try {
-        const descuento = await descuentoPrisma.findUnique({
+        const descuento = await prisma.descuento.findUnique({
             where: { id: id }
         })
 
@@ -66,7 +66,7 @@ export const updateDescuentos = async (req: Request, res: Response): Promise<voi
     const { fechaInicio, fechaCierre, descuento } = req.body
 
     try {
-        const existingDescuento = descuentoPrisma.findUnique({
+        const existingDescuento = prisma.descuento.findUnique({
             where: { id: id }
         })
 
@@ -74,7 +74,7 @@ export const updateDescuentos = async (req: Request, res: Response): Promise<voi
             res.status(404).json({ message: "El descuento no fue encontrado" })
         }
 
-        const updatedDescuento = await descuentoPrisma.update({
+        const updatedDescuento = await prisma.descuento.update({
             where: { id },
             data: {
                 fechaInicio,
@@ -94,7 +94,7 @@ export const deleteDescuento = async (req: Request, res: Response): Promise<void
     const { id } = req.params
 
     try {
-        await  descuentoPrisma.delete({
+        await  prisma.descuento.delete({
             where: { id: id },
         });
         
@@ -109,7 +109,7 @@ export const toggleHabilitadoDescuento = async (req: Request, res: Response): Pr
   const { id } = req.params;
 
   try {
-    const entity = await descuentoPrisma.findUnique({
+    const entity = await prisma.descuento.findUnique({
       where: { id }
     });
 
@@ -118,7 +118,7 @@ export const toggleHabilitadoDescuento = async (req: Request, res: Response): Pr
       return;
     }
 
-    const updatedEntity = await descuentoPrisma.update({
+    const updatedEntity = await prisma.descuento.update({
       where: { id },
       data: {
         habilitado: !entity.habilitado
@@ -134,7 +134,7 @@ export const toggleHabilitadoDescuento = async (req: Request, res: Response): Pr
 // OBTENER LOS DESCUENTOS HABILIDATOS
 export const getHabilitados = async (req: Request, res: Response): Promise<void> => {
   try {
-    const habilitados = await descuentoPrisma.findMany({
+    const habilitados = await prisma.descuento.findMany({
       where: { habilitado: true, }
     });
     
