@@ -147,11 +147,26 @@ export const addDireccionesToUser = async (req: Request, res: Response): Promise
             return;
         }
 
+        const direccionesExistentes = await prismaDireccion.findMany({
+            where: {
+                id: { in: direccionIds }
+            },
+            select: { id: true }
+        });
+
+        const idsExistentes = direccionesExistentes.map(d => d.id);
+        const idsInvalidos = direccionIds.filter((id: string) => !idsExistentes.includes(id));
+
+        if (idsInvalidos.length > 0) {
+            res.status(400).json({ error: `Las siguientes direcciones no existen: ${idsInvalidos.join(', ')}` });
+            return;
+        }
+
         await prismaUsuario.update({
             where: { id: userId },
             data: {
                 direcciones: {
-                    connect: direccionIds.map((id: string) => ({ id })),
+                    connect: direccionIds.map((id: string) => ({ id }))
                 }
             }
         });

@@ -5,7 +5,7 @@ import { authenticateToken } from '../middlewares/authenticateToken'
 const router = express.Router()
 
 // GET /usuarios/getEnabled
-router.get('/getEnabled', getEnabledUsers)
+router.get('/getEnabled', authenticateToken, getEnabledUsers)
 
 // PATCH /usuarios/toggleEnabled/:id
 router.patch('/toggleEnabled/:id', authenticateToken, toggleEnabled)
