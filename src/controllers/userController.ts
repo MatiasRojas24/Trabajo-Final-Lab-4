@@ -100,6 +100,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
                 dni,
             }
         });
+        
         res.status(200).json(updatedUser);
     } catch (error: any) {
         if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {

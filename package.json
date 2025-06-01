@@ -8,6 +8,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "node --loader ts-node/esm --experimental-specifier-resolution=node src/server.ts",
+    "devv": "nodemon --watch src --ext ts --exec \"node --loader ts-node/esm --experimental-specifier-resolution=node src/server.ts\"",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,11 +22,13 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "nanoid": "^5.1.5",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
+    "nodemon": "^3.1.10",
     "rimraf": "^6.0.1"
   }
 }

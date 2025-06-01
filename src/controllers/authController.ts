@@ -3,6 +3,7 @@ import { comparePasswords, hashPassword } from "../services/passwordService";
 import { prismaUsuario } from '../models/usuario'
 import { generateToken } from "../services/authService";
 
+
 export const registerCliente = async (req: Request, res: Response): Promise<void> => {
     const { email, password, nombre, dni } = req.body;
 
