@@ -20,7 +20,7 @@ router.put("/:id", authenticateToken, updateOrdenCompraDetalle);
 router.patch("/toggle-habilitado/:id", authenticateToken, toggleHabilitadoOrdenCompraDetalle);
 
 //GET /ordenComprasDetalle/getEnabledOrdenComprasDetalle
-router.get("/getEnabledOrdenComprasDetalle", authenticateToken, getEnabledOrdenComprasDetalle);
+router.get("/getEnabled", authenticateToken, getEnabledOrdenComprasDetalle);
 
 //DELETE /ordenComprasDetalle/:id
 router.delete("/:id", authenticateToken, deleteOrdenCompraDetalle);

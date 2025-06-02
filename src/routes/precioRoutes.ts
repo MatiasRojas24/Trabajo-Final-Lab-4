@@ -23,7 +23,7 @@ router.delete('/:id', authenticateToken, deletePrecio);
 router.patch('/toggle-habilitado/:id', authenticateToken, toggleHabilitado);
 
 //GET /precios/getEnabledPrecios
-router.get('/getEnabledPrecios', getEnabledPrecios);
+router.get('/getEnabled', getEnabledPrecios);
 
 //GET /detallesProductos/:id
 router.get("/detallesProductos/:id", authenticateToken, listarPorDetalleProducto)

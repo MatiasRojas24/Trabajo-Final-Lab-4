@@ -22,7 +22,7 @@ router.delete("/:id", authenticateToken, deleteOrdenCompra);
 router.patch("/toggle-habilitado/:id", authenticateToken, toggleHabilitadoOrdenCompra);
 
 //GET /ordenesDeCompra/getEnabledOrdenesDeCompra
-router.get("/getEnabledOrdenDeCompra", authenticateToken, getEnabledOrdenDeCompra)
+router.get("/getEnabled", authenticateToken, getEnabledOrdenDeCompra)
 
 //GET /ordenesDeCompra/usuarios/:id
 router.get('/usuarios/:id', authenticateToken, listarPorUsuario)
@@ -31,10 +31,10 @@ router.get('/usuarios/:id', authenticateToken, listarPorUsuario)
 router.get("/direcciones/:id", authenticateToken, listarPorDirecciones)
 
 //POST /usuarios/:ordenCompraId
-router.post("/usuarios/:ordenCompraId", authenticateToken,addUserOrdenCompra)
+router.post("/usuarios/:ordenCompraId", authenticateToken, addUserOrdenCompra)
 
 //POST /direcciones/idOrdenComrpraId
-router.post("/direcciones/:ordenCompraId",authenticateToken, addDireccionOrdenCompra)
+router.post("/direcciones/:ordenCompraId", authenticateToken, addDireccionOrdenCompra)
 
 
 export default router
