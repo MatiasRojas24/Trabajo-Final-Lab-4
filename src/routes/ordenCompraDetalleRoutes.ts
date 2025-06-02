@@ -1,8 +1,29 @@
 import express, { Router } from 'express'
 import { authenticateToken } from '../middlewares/authenticateToken';
-import { addDetalleProducto, addOrdenCompra, listarPorDetalleProducto, listarPorOrdenCompra } from '../controllers/ordenCompraDetalleController';
+import { addDetalleProducto, addOrdenCompra, createOrdenCompraDetalle, deleteOrdenCompraDetalle, getEnabledOrdenComprasDetalle, getOrdenCompraDetalleById, getOrdenesCompraDetalle, listarPorDetalleProducto, listarPorOrdenCompra, toggleHabilitadoOrdenCompraDetalle, updateOrdenCompraDetalle } from '../controllers/ordenCompraDetalleController';
 
 const router = express.Router();
+
+//GET /ordenComprasDetalle
+router.get("/",authenticateToken, getOrdenesCompraDetalle);
+
+//GET /ordenComprasDetalle/:id
+router.get("/:id",authenticateToken, getOrdenCompraDetalleById);
+
+//POST /ordenComprasDetalle
+router.post("/",authenticateToken, createOrdenCompraDetalle);
+
+//PUT /ordenComprasDetalle/:id
+router.put("/:id",authenticateToken,  updateOrdenCompraDetalle);
+
+//PATCH /ordenComprasDetalle/toggle-habilitado/:id
+router.patch("/toggle-habilitado/:id",authenticateToken, toggleHabilitadoOrdenCompraDetalle);
+
+//GET /ordenComprasDetalle/getEnabledOrdenComprasDetalle
+router.get("/getEnabledOrdenComprasDetalle", getEnabledOrdenComprasDetalle);
+
+//DELETE /ordenComprasDetalle/:id
+router.delete("/:id",authenticateToken,  deleteOrdenCompraDetalle);
 
 //GET /ordenCompras/:id
 router.get("/ordenCompras/:id", authenticateToken, listarPorOrdenCompra)

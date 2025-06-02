@@ -5,6 +5,146 @@ import { prismaOrdenCompra } from "../models/ordenCompra";
 import { connect } from "http2";
 import { prismaDetalleProducto } from "../models/detalleProducto";
 
+
+export const getOrdenCompraDetalleById = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const detalle = await prismaOrdenCompraDetalle.findUnique({
+        where: { id },
+        include: {
+            ordenCompra: true,
+            detalleProducto: true,
+        },
+        });
+
+        if (!detalle) {
+        res.status(404).json({ error: "Detalle de orden no encontrado" });
+        return;
+    }
+
+    res.status(200).json(detalle);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener el detalle" });
+    }
+};
+
+
+export const getOrdenesCompraDetalle = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const detalles = await prismaOrdenCompraDetalle.findMany({
+        include: {
+            ordenCompra: true,
+            detalleProducto: true,
+        },
+        });
+
+    res.status(200).json(detalles);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener los detalles" });
+    }
+};
+
+
+export const createOrdenCompraDetalle = async (req: Request, res: Response): Promise<void> => {
+    const { ordenCompraId, detalleProductoId, cantidad, subtotal } = req.body;
+
+    try {
+        const detalle = await prismaOrdenCompraDetalle.create({
+        data: {
+            ordenCompraId,
+            detalleProductoId,
+            cantidad,
+            subtotal,
+        },
+    });
+
+    res.status(201).json(detalle);
+    } catch (error) {
+        res.status(500).json({ error: "Error al crear el detalle" });
+    }
+};
+
+// Actualizar un detalle
+export const updateOrdenCompraDetalle = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const { ordenCompraId, detalleProductoId, cantidad, subtotal, habilitado } = req.body;
+
+    try {
+        const detalleActualizado = await prismaOrdenCompraDetalle.update({
+        where: { id },
+        data: {
+            ordenCompraId,
+            detalleProductoId,
+            cantidad,
+            subtotal,
+            habilitado,
+        },
+    });
+
+    res.status(200).json(detalleActualizado);
+    } catch (error) {
+        res.status(500).json({ error: "Error al actualizar el detalle" });
+    }
+};
+
+// Eliminar un detalle
+export const deleteOrdenCompraDetalle = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        await prismaOrdenCompraDetalle.delete({
+        where: { id },
+    });
+
+    res.status(200).json({ mensaje: "Detalle eliminado correctamente" });
+    } catch (error) {
+        res.status(500).json({ error: "Error al eliminar el detalle" });
+    }
+};
+
+export const toggleHabilitadoOrdenCompraDetalle = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const detalle = await prismaOrdenCompraDetalle.findUnique({ where: { id } });
+
+        if (!detalle) {
+        res.status(404).json({ error: "Detalle no encontrado" });
+        return;
+    }
+
+        const detalleActualizado = await prismaOrdenCompraDetalle.update({
+        where: { id },
+        data: { habilitado: !detalle.habilitado },
+        });
+
+    res.status(200).json({ mensaje: "Estado actualizado", detalle: detalleActualizado });
+    } catch (error) {
+        res.status(500).json({ error: "Error al alternar el estado" });
+    }
+};
+
+
+export const getEnabledOrdenComprasDetalle = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const detalles = await prismaOrdenCompraDetalle.findMany({
+        where: { habilitado: true },
+        include: {
+            ordenCompra: true,
+            detalleProducto: true,
+        },
+    });
+
+    res.status(200).json(detalles);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener los detalles habilitados" });
+    }
+};
+
+
+
+
 export const addOrdenCompra = async (req: Request , res: Response): Promise<void> => {
     const {ordenCompraDetalleId} = req.params;
     const {ordenCompraId} = req.body;

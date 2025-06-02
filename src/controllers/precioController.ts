@@ -4,6 +4,127 @@ import { prismaDetalleProducto } from "../models/detalleProducto";
 import { connect } from "http2";
 import { prismaDescuento } from "../models/descuento";
 
+
+export const getPrecioById = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const precio = await prismaPrecio.findUnique({
+            where: { id },
+            include: { detalleProducto: true, descuento: true }
+        });
+
+        if (!precio) {
+            res.status(404).json({ error: 'Precio no encontrado' });
+            return;
+        }
+
+        res.status(200).json(precio);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el precio' });
+    }
+};
+
+
+export const getAllPrecios = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const precios = await prismaPrecio.findMany({
+            include: { detalleProducto: true, descuento: true }
+        });
+        res.status(200).json(precios);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al listar precios' });
+    }
+};
+
+
+export const createPrecio = async (req: Request, res: Response): Promise<void> => {
+    const { precioCompra, precioVenta, detalleProductoId, descuentoId } = req.body;
+
+    try {
+        const nuevoPrecio = await prismaPrecio.create({
+            data: {
+                precioCompra,
+                precioVenta,
+                detalleProductoId,
+                descuentoId
+            }
+        });
+        res.status(201).json(nuevoPrecio);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al crear el precio' });
+    }
+};
+
+
+export const updatePrecio = async (req: Request, res: Response): Promise<void> => {
+    const { id, precioCompra, precioVenta, detalleProductoId, descuentoId } = req.body;
+
+    try {
+        const precioActualizado = await prismaPrecio.update({
+            where: { id },
+            data: {
+                precioCompra,
+                precioVenta,
+                detalleProductoId,
+                descuentoId
+            }
+        });
+
+        res.status(200).json(precioActualizado);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al actualizar el precio' });
+    }
+};
+
+
+export const deletePrecio = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        await prismaPrecio.delete({ where: { id } });
+        res.status(200).json({ mensaje: 'Precio eliminado con éxito' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar el precio' });
+    }
+};
+
+export const toggleHabilitado = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const precio = await prismaPrecio.findUnique({ where: { id } });
+
+        if (!precio) {
+            res.status(404).json({ error: 'Precio no encontrado' });
+            return;
+        }
+
+        const precioActualizado = await prismaPrecio.update({
+            where: { id },
+            data: { habilitado: !precio.habilitado }
+        });
+
+        res.status(200).json({ mensaje: 'Estado de habilitado alternado correctamente', precio: precioActualizado });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al alternar el estado' });
+    }
+};
+
+
+export const getEnabledPrecios = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const precios = await prismaPrecio.findMany({
+            where: { habilitado: true },
+            include: { detalleProducto: true, descuento: true }
+        });
+        res.status(200).json(precios);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener precios habilitados' });
+    }
+};
+
+
 export const addDetalleProducto = async (req: Request, res: Response): Promise <void> => {
     const {idPrecio} = req.params;
     const {idDetalleProducto} = req.body;

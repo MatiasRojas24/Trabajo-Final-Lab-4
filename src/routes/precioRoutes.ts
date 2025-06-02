@@ -1,8 +1,29 @@
 import express from 'express'
 import { authenticateToken } from '../middlewares/authenticateToken'
-import { addDescuento, addDetalleProducto, listarPorDescuento, listarPorDetalleProducto } from '../controllers/precioController'
+import { addDescuento, addDetalleProducto, createPrecio, deletePrecio, getAllPrecios, getEnabledPrecios, getPrecioById, listarPorDescuento, listarPorDetalleProducto, toggleHabilitado, updatePrecio } from '../controllers/precioController'
 
 const router = express.Router()
+
+//GET /precios
+router.get('/', authenticateToken, getAllPrecios);
+
+//GET /precios/:id
+router.get('/:id', authenticateToken, getPrecioById);
+
+//POST /precios
+router.post('/', authenticateToken, createPrecio);
+
+//PUT /precios
+router.put('/', authenticateToken, updatePrecio);
+
+//DELETE /precios/id:
+router.delete('/:id', authenticateToken, deletePrecio);
+
+//PATCH /precios/toggle-habilitado/:id
+router.patch('/toggle-habilitado/:id', authenticateToken, toggleHabilitado);
+
+//GET /precios/getEnabledPrecios
+router.get('/getEnabledPrecios', authenticateToken, getEnabledPrecios);
 
 //GET /detallesProductos/:id
 router.get("/detallesProductos/:id",authenticateToken, listarPorDetalleProducto)
