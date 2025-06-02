@@ -356,7 +356,7 @@ export const listarProductosFiltrados = async (req: Request, res: Response) => {
     const productos = await prisma.producto.findMany({
       where: {
         habilitado: true,
-        tipoProducto: tipoProducto && Object.values(TipoProducto).includes(tipoProducto as TipoProducto)
+        tipoProducto: tipoProducto && Object.values(TipoPProducto).includes(tipoProducto as TipoProducto)
         ? (tipoProducto as TipoProducto)
         : undefined,
 

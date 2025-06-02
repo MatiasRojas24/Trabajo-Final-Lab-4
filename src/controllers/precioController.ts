@@ -46,8 +46,8 @@ export const createPrecio = async (req: Request, res: Response): Promise<void> =
             data: {
                 precioCompra,
                 precioVenta,
-                detalleProductoId,
-                descuentoId
+                detalleProductoId: {connect: {id: detalleProductoId}},
+                descuentoId: {connect: {id: descuentoId}}
             }
         });
         res.status(201).json(nuevoPrecio);
