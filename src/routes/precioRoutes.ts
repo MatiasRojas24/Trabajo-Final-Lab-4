@@ -23,18 +23,18 @@ router.delete('/:id', authenticateToken, deletePrecio);
 router.patch('/toggle-habilitado/:id', authenticateToken, toggleHabilitado);
 
 //GET /precios/getEnabledPrecios
-router.get('/getEnabledPrecios', authenticateToken, getEnabledPrecios);
+router.get('/getEnabledPrecios', getEnabledPrecios);
 
 //GET /detallesProductos/:id
-router.get("/detallesProductos/:id",authenticateToken, listarPorDetalleProducto)
+router.get("/detallesProductos/:id", authenticateToken, listarPorDetalleProducto)
 
 //GET /descuentos/:id
-router.get("/descuentos/:id",authenticateToken, listarPorDescuento)
+router.get("/descuentos/:id", authenticateToken, listarPorDescuento)
 
 //POST /detallesProductos/:precioId
-router.post("/detallesProductos/:precioId",authenticateToken,addDetalleProducto)
+router.post("/detallesProductos/:precioId", authenticateToken, addDetalleProducto)
 
 //POST /descuentos/:precioId
-router.post("/descuentos/:precioId",authenticateToken, addDescuento)
+router.post("/descuentos/:precioId", authenticateToken, addDescuento)
 
 export default router
