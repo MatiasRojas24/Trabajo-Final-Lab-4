@@ -86,7 +86,6 @@ export const listarPorOrdenCompra = async (req: Request, res: Response): Promise
             },
             include: {
                 ordenCompra: true,
-                detalleProducto: true
             }
         });
         res.status(200).json({ mensaje: 'Orden Compra agregada correctamente a la Orden Compra Detalle' });
@@ -104,8 +103,7 @@ export const listarPorDetalleProducto = async (req: Request, res:Response): Prom
                 detalleProductoId: detalleProductoId,
             },
             include: {
-                ordenCompra: true,
-                detalleProducto: true
+                detalleProducto: true,
             }
         })
         res.status(200).json({ mensaje: 'Detalle Producto agregado correctamente a la orden compra detalle' });

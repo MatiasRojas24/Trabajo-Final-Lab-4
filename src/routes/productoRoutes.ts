@@ -18,12 +18,11 @@ const router = Router();
 // GET /productos/getEnabled
 router.get("/getEnabled", getEnabledProductos);
 
+// GET /productos/filtro
+router.get("/filtro", authenticateToken, filtrarProductos);
+
 // PATCH /productos/toggle-habilitado/:id
-router.patch(
-  "/toggle-habilitado/:id",
-  authenticateToken,
-  toggleEnabledProducto
-);
+router.patch("/toggle-habilitado/:id", authenticateToken, toggleEnabledProducto);
 
 // GET /productos
 router.get("/", authenticateToken, getProductos);
@@ -45,8 +44,5 @@ router.post("/catalogos/:idProducto", authenticateToken, agregarCatalogo);
 
 // GET /productos/catalogos/:id
 router.get("/catalogos/:id", authenticateToken, listarPorCatalogo);
-
-// GET /productos/filtro
-router.get("/filtro", authenticateToken, filtrarProductos);
 
 export default router;

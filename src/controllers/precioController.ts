@@ -83,7 +83,6 @@ export const listarPorDetalleProducto = async (req: Request, res: Response): Pro
             },
             include: {
                 detalleProducto: true,
-                descuento: true
             }
         });
 
@@ -102,8 +101,7 @@ export const listarPorDescuento = async (req: Request, res: Response): Promise<v
                 descuentoId: descuentoId,
             },
             include: {
-                detalleProducto: true,
-                descuento: true
+                descuento: true,
             }
         });
 

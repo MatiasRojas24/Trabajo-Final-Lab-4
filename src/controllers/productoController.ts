@@ -224,12 +224,9 @@ export const deleteProducto = async (
   }
 };
 
-export const agregarCatalogo = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const agregarCatalogo = async (req: Request, res: Response): Promise<void> => {
   const { idProducto } = req.params;
-  const { id: catalogoId } = req.body;
+  const { catalogoId } = req.body;
 
   try {
     const producto = await prisma.producto.findUnique({
@@ -247,6 +244,11 @@ export const agregarCatalogo = async (
 
     if (!catalogo) {
       res.status(404).json({ error: "Catálogo no encontrado" });
+      return;
+    }
+
+    if (producto.catalogoId === catalogoId) {
+      res.status(409).json({ message: "El catalogo que estas intentando colocar, ya existe, saludos crack" })
       return;
     }
 

@@ -31,7 +31,7 @@ export const createDetalleProducto = async (req: Request, res: Response): Promis
                         connect: ordenCompraDetalleIds.map((id: string) => ({ id }))
                     }
                 })
-            } as Prisma.DetalleProductoCreateInput, // ==> Esta linea le dice a typescript que data esta cumpliendo con el modelo detalleProducto
+            } as Prisma.DetalleProductoCreateInput,
             include: {
                 talle: true,
                 producto: true,
@@ -43,8 +43,8 @@ export const createDetalleProducto = async (req: Request, res: Response): Promis
 
         res.status(201).json(nuevoDetalleProducto);
     } catch (error) {
-        console.error("Error al crear descuento:", error);
-        res.status(500).json({ message: 'Error al crear el descuento' });
+        console.error("Error al crear detalle producto:", error);
+        res.status(500).json({ message: 'Error al crear el detalle producto' });
     }
 };
 

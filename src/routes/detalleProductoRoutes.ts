@@ -7,6 +7,9 @@ const router = express.Router()
 // GET /detalleProducto/getEnabled
 router.get('/getEnabled', getEnabledDetallesProductos )
 
+// GET /detalleProducto/:productoId
+router.get('/:productoId', authenticateToken, getDetalleProductoByProducto)
+
 // PATCH /detalleProducto/toggleEnabled/:id
 router.patch('/toggleEnabled/:id', toggleHabilitadoDetProd)
 
@@ -26,16 +29,13 @@ router.put('/:id', authenticateToken, updateDetalleProducto) // no anda    // ac
 router.delete('/:id', deleteDetalleProducto)
 
 // POST /detalleProducto/:dpId/talle
-router.post('/:dpId/talle', authenticateToken, addTalleToDetalleProducto) // No lo pude probar sin los talles
+router.post('/:dpId/talle', authenticateToken, addTalleToDetalleProducto)
 
-// GET /detalleProducto/:talleId
-router.get('/:talleId', authenticateToken, getDetalleProductoByTalle) // No lo pude probar sin los talles
+// GET /detalleProducto/:talleId/getDP
+router.get('/:talleId/getDP', authenticateToken, getDetalleProductoByTalle)
 
 // POST /detalleProducto/:dpId/producto
-router.post('/:dpId/producto', authenticateToken, addProductoToDetalleProducto) // No lo pude probar sin los productos
-
-// GET /detalleProducto/:productoId
-router.get('/:productoId', authenticateToken, getDetalleProductoByProducto) // No lo pude probar sin los productos
+router.post('/:dpId/producto', authenticateToken, addProductoToDetalleProducto)
 
 // GET /productos/filtrados
 router.get('/filtrados', authenticateToken, listarProductosFiltrados) // PROBAR ESTE FILTRO MAS TARDE Y VER SI HAY QUE COLOCAR ESTE ROUTER MAS ARRIBA

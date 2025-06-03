@@ -86,7 +86,6 @@ export const listarPorUsuario = async (req: Request, res: Response): Promise<voi
                 usuarioId: usuarioId,
             },
             include:{
-                direccion: true,
                 usuario: true
             }
         });
@@ -108,7 +107,6 @@ export const listarPorDirecciones = async (req: Request, res:Response): Promise<
             },
             include: {
                 direccion: true,
-                usuario: true
             }
         });
         res.status(200).json(ordenesCompras);
