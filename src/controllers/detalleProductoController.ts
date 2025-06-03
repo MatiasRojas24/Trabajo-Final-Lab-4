@@ -186,41 +186,41 @@ export const deleteDetalleProducto = async (req: Request, res: Response): Promis
 };
 
 export const toggleHabilitadoDetProd = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
+    try {
     const existingDetalleProducto = await prisma.detalleProducto.findUnique({
-      where: { id }
+        where: { id }
     });
 
     if (!existingDetalleProducto) {
-      res.status(404).json({ message: `Detalle de producto no encontrado` });
-      return;
+        res.status(404).json({ message: `Detalle de producto no encontrado` });
+        return;
     }
 
     const detalleProductoActualizado = await prisma.detalleProducto.update({
-      where: { id },
-      data: {
+        where: { id },
+        data: {
         habilitado: !existingDetalleProducto.habilitado
-      }
+        }
     });
 
     res.status(200).json(detalleProductoActualizado);
-  } catch (error) {
+    } catch (error) {
     res.status(500).json({ message: 'Error al cambiar el estado del detalle producto' });
-  }
+    }
 };
 
 
 
 export const addTalleToDetalleProducto = async (req: Request, res: Response) => {
-  const { dpId } = req.params;
-  const { talleId } = req.body;
+    const { dpId } = req.params;
+    const { talleId } = req.body;
 
-  try {
+    try {
     // Verificamos existencia del talle
     const talle = await prisma.talle.findUnique({
-      where: { id: talleId },
+        where: { id: talleId },
     });
 
     if (!talle || !talle.habilitado) {
@@ -230,7 +230,7 @@ export const addTalleToDetalleProducto = async (req: Request, res: Response) => 
 
     // Verificamos existencia del detalleProducto
     const detalleProducto = await prisma.detalleProducto.findUnique({
-      where: { id: dpId },
+        where: { id: dpId },
     });
 
     if (!detalleProducto) {
@@ -240,22 +240,22 @@ export const addTalleToDetalleProducto = async (req: Request, res: Response) => 
 
     // Asociamos el talle
     const updatedDetalleProducto = await prisma.detalleProducto.update({
-      where: { id: dpId },
-      data: { talleId },
-      include: {
-        talle: true,
-        producto: true,
-        Imagen: true,
-        Precio: true,
-        OrdenCompraDetalle: true,
-      },
+        where: { id: dpId },
+        data: { talleId },
+        include: {
+            talle: true,
+            producto: true,
+            Imagen: true,
+            Precio: true,
+            OrdenCompraDetalle: true,
+        },
     });
 
     res.status(200).json(updatedDetalleProducto);
-  } catch (error) {
+    } catch (error) {
     console.error('Error al asociar talle:', error);
     res.status(500).json({ error: 'Error del servidor al asociar el talle' });
-  }
+    }
 };
 
 export const getDetalleProductoByTalle = async (req: Request, res: Response): Promise<void> => {
@@ -288,7 +288,7 @@ export const addProductoToDetalleProducto = async (req: Request, res: Response):
     try {
     // Verificamos existencia del producto
     const producto = await prisma.producto.findUnique({
-      where: { id: productoId },
+        where: { id: productoId },
     });
 
     if (!producto || !producto.habilitado) {
@@ -298,7 +298,7 @@ export const addProductoToDetalleProducto = async (req: Request, res: Response):
 
     // Verificamos existencia del detalleProducto
     const detalleProducto = await prisma.detalleProducto.findUnique({
-      where: { id: dpId },
+        where: { id: dpId },
     });
 
     if (!detalleProducto) {
@@ -308,22 +308,22 @@ export const addProductoToDetalleProducto = async (req: Request, res: Response):
 
     // Asociamos el producto
     const updatedDetalleProducto = await prisma.detalleProducto.update({
-      where: { id: dpId },
-      data: { productoId },
-      include: {
-        talle: true,
-        producto: true,
-        Imagen: true,
-        Precio: true,
-        OrdenCompraDetalle: true,
-      },
+        where: { id: dpId },
+        data: { productoId },
+            include: {
+                talle: true,
+                producto: true,
+                Imagen: true,
+                Precio: true,
+                OrdenCompraDetalle: true,
+        },
     });
 
     res.status(200).json(updatedDetalleProducto);
-  } catch (error) {
+    } catch (error) {
     console.error('Error al asociar talle:', error);
     res.status(500).json({ error: 'Error del servidor al asociar el talle' });
-  }
+    }
 }
 
 export const getDetalleProductoByProducto = async (req: Request, res: Response): Promise<void> => {
@@ -350,13 +350,13 @@ export const getDetalleProductoByProducto = async (req: Request, res: Response):
 };
 
 export const listarProductosFiltrados = async (req: Request, res: Response) => {
-  const { talleId, tipoProducto, sexo, precioMin, precioMax } = req.query;
+    const { talleId, tipoProducto, sexo, precioMin, precioMax } = req.query;
 
-  try {
+    try {
     const productos = await prisma.producto.findMany({
-      where: {
+        where: {
         habilitado: true,
-        tipoProducto: tipoProducto && Object.values(TipoPProducto).includes(tipoProducto as TipoProducto)
+        tipoProducto: tipoProducto && Object.values(TipoProducto).includes(tipoProducto as TipoProducto)
         ? (tipoProducto as TipoProducto)
         : undefined,
 
@@ -365,11 +365,11 @@ export const listarProductosFiltrados = async (req: Request, res: Response) => {
         : undefined,
 
         DetalleProducto: {
-          some: {
+            some: {
             habilitado: true,
             talleId: talleId ? String(talleId) : undefined,
             Precio: (precioMin || precioMax)
-              ? {
+                ? {
                     some: {
                         precioVenta: {
                             gte: precioMin ? Number(precioMin) : undefined,
@@ -377,17 +377,17 @@ export const listarProductosFiltrados = async (req: Request, res: Response) => {
                         },
                     },
                 }
-              : undefined,
-          },
+                : undefined,
+            },
         },
-      },
-      include: {
+        },
+        include: {
         DetalleProducto: {
-          where: {
+            where: {
             habilitado: true,
             talleId: talleId ? String(talleId) : undefined,
             Precio: (precioMin || precioMax)
-              ? {
+                ? {
                     some: {
                         precioVenta: {
                             gte: precioMin ? Number(precioMin) : undefined,
@@ -395,20 +395,20 @@ export const listarProductosFiltrados = async (req: Request, res: Response) => {
                         },
                     }
                 }
-              : undefined,
-          },
-          include: {
+                : undefined,
+            },
+            include: {
             talle: true,
             Precio: true,
             Imagen: true,
-          },
+            },
         },
-      },
+        },
     });
 
     res.status(200).json(productos);
-  } catch (error) {
+    } catch (error) {
     console.error('Error al listar productos filtrados:', error);
     res.status(500).json({ error: 'Error del servidor al filtrar productos' });
-  }
+    }
 };

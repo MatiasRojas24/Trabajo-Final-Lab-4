@@ -14,7 +14,7 @@ export const getOrdenCompraDetalleById = async (req: Request, res: Response): Pr
         where: { id },
         include: {
             ordenCompra: true,
-            detalleProducto: true,
+            //detalleProducto: true,
         },
         });
 
@@ -25,6 +25,7 @@ export const getOrdenCompraDetalleById = async (req: Request, res: Response): Pr
 
     res.status(200).json(detalle);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: "Error al obtener el detalle" });
     }
 };
@@ -35,12 +36,13 @@ export const getOrdenesCompraDetalle = async (_req: Request, res: Response): Pro
         const detalles = await prismaOrdenCompraDetalle.findMany({
         include: {
             ordenCompra: true,
-            detalleProducto: true,
+            //detalleProducto: true,
         },
         });
 
     res.status(200).json(detalles);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: "Error al obtener los detalles" });
     }
 };
@@ -65,7 +67,7 @@ export const createOrdenCompraDetalle = async (req: Request, res: Response): Pro
     }
 };
 
-// Actualizar un detalle
+
 export const updateOrdenCompraDetalle = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const { ordenCompraId, detalleProductoId, cantidad, subtotal, habilitado } = req.body;
@@ -88,7 +90,7 @@ export const updateOrdenCompraDetalle = async (req: Request, res: Response): Pro
     }
 };
 
-// Eliminar un detalle
+
 export const deleteOrdenCompraDetalle = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
@@ -132,7 +134,7 @@ export const getEnabledOrdenComprasDetalle = async (_req: Request, res: Response
         where: { habilitado: true },
         include: {
             ordenCompra: true,
-            detalleProducto: true,
+            //detalleProducto: true,
         },
     });
 

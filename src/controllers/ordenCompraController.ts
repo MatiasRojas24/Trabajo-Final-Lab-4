@@ -65,6 +65,7 @@ export const createOrdenCompra = async (req: Request, res: Response): Promise<vo
 
             res.status(201).json(orden);
         } catch (error) {
+            console.log(error)
             res.status(500).json({ error: "Error al crear la orden de compra" });
         }
 };

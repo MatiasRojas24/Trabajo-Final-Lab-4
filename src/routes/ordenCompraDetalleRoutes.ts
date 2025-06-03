@@ -7,6 +7,9 @@ const router = express.Router();
 //GET /ordenComprasDetalle
 router.get("/", authenticateToken, getOrdenesCompraDetalle);
 
+//GET /ordenComprasDetalle/getEnabledOrdenComprasDetalle
+router.get("/getEnabled", authenticateToken, getEnabledOrdenComprasDetalle);
+
 //GET /ordenComprasDetalle/:id
 router.get("/:id", authenticateToken, getOrdenCompraDetalleById);
 
@@ -19,8 +22,6 @@ router.put("/:id", authenticateToken, updateOrdenCompraDetalle);
 //PATCH /ordenComprasDetalle/toggle-habilitado/:id
 router.patch("/toggle-habilitado/:id", authenticateToken, toggleHabilitadoOrdenCompraDetalle);
 
-//GET /ordenComprasDetalle/getEnabledOrdenComprasDetalle
-router.get("/getEnabled", authenticateToken, getEnabledOrdenComprasDetalle);
 
 //DELETE /ordenComprasDetalle/:id
 router.delete("/:id", authenticateToken, deleteOrdenCompraDetalle);

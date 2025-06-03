@@ -7,6 +7,9 @@ const router = express.Router()
 //GET /precios
 router.get('/', authenticateToken, getAllPrecios);
 
+//GET /precios/getEnabledPrecios
+router.get('/getEnabled',authenticateToken, getEnabledPrecios);
+
 //GET /precios/:id
 router.get('/:id', authenticateToken, getPrecioById);
 
@@ -21,9 +24,6 @@ router.delete('/:id', authenticateToken, deletePrecio);
 
 //PATCH /precios/toggle-habilitado/:id
 router.patch('/toggle-habilitado/:id', authenticateToken, toggleHabilitado);
-
-//GET /precios/getEnabledPrecios
-router.get('/getEnabled', getEnabledPrecios);
 
 //GET /detallesProductos/:id
 router.get("/detallesProductos/:id", authenticateToken, listarPorDetalleProducto)

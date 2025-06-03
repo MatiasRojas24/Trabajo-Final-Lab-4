@@ -7,11 +7,11 @@ import { prismaDescuento } from "../models/descuento";
 
 export const getPrecioById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-
+    
     try {
+        
         const precio = await prismaPrecio.findUnique({
             where: { id },
-            include: { detalleProducto: true, descuento: true }
         });
 
         if (!precio) {
@@ -28,9 +28,7 @@ export const getPrecioById = async (req: Request, res: Response): Promise<void> 
 
 export const getAllPrecios = async (_req: Request, res: Response): Promise<void> => {
     try {
-        const precios = await prismaPrecio.findMany({
-            include: { detalleProducto: true, descuento: true }
-        });
+        const precios = await prismaPrecio.findMany();
         res.status(200).json(precios);
     } catch (error) {
         res.status(500).json({ error: 'Error al listar precios' });
@@ -46,8 +44,8 @@ export const createPrecio = async (req: Request, res: Response): Promise<void> =
             data: {
                 precioCompra,
                 precioVenta,
-                detalleProductoId: {connect: {id: detalleProductoId}},
-                descuentoId: {connect: {id: descuentoId}}
+                detalleProductoId,
+                descuentoId
             }
         });
         res.status(201).json(nuevoPrecio);
@@ -112,16 +110,18 @@ export const toggleHabilitado = async (req: Request, res: Response): Promise<voi
 };
 
 
-export const getEnabledPrecios = async (_req: Request, res: Response): Promise<void> => {
+export const getEnabledPrecios = async ( req: Request, res: Response): Promise<void> => {
     try {
+        console.log('Entró a getEnabledPrecios');
         const precios = await prismaPrecio.findMany({
             where: { habilitado: true },
-            include: { detalleProducto: true, descuento: true }
         });
+        
         res.status(200).json(precios);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener precios habilitados' });
-    }
+    console.error('Error en getEnabledPrecios:', error);
+    res.status(500).json({ error: 'Error al obtener precios habilitados' });
+}
 };
 
 

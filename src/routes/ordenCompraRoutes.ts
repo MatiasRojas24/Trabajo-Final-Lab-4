@@ -3,8 +3,12 @@ import { authenticateToken } from '../middlewares/authenticateToken'
 import { addDireccionOrdenCompra, addUserOrdenCompra, createOrdenCompra, deleteOrdenCompra, getEnabledOrdenDeCompra, getOrdenCompraById, getOrdenesCompra, listarPorDirecciones, listarPorUsuario, toggleHabilitadoOrdenCompra, updateOrdenCompra } from '../controllers/ordenCompraController'
 
 const router = express.Router()
+
 //GET /ordenesDeCompra
 router.get("/", authenticateToken, getOrdenesCompra);
+
+//GET /ordenesDeCompra/getEnabledOrdenesDeCompra
+router.get("/getEnabled", authenticateToken, getEnabledOrdenDeCompra)
 
 //GET /ordenesDeCompra/:id
 router.get("/:id", authenticateToken, getOrdenCompraById);
@@ -20,9 +24,6 @@ router.delete("/:id", authenticateToken, deleteOrdenCompra);
 
 //PATCH /ordenesDeCompra/toggle-habilitado/:id
 router.patch("/toggle-habilitado/:id", authenticateToken, toggleHabilitadoOrdenCompra);
-
-//GET /ordenesDeCompra/getEnabledOrdenesDeCompra
-router.get("/getEnabled", authenticateToken, getEnabledOrdenDeCompra)
 
 //GET /ordenesDeCompra/usuarios/:id
 router.get('/usuarios/:id', authenticateToken, listarPorUsuario)
