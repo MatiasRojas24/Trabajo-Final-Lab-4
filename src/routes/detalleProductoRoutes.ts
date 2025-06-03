@@ -5,13 +5,13 @@ import { addProductoToDetalleProducto, addTalleToDetalleProducto, createDetalleP
 const router = express.Router()
 
 // GET /detalleProducto/getEnabled
-router.get('/getEnabled', getEnabledDetallesProductos )
+router.get('/getEnabled', getEnabledDetallesProductos)
 
 // GET /detalleProducto/:productoId
 router.get('/:productoId', authenticateToken, getDetalleProductoByProducto)
 
 // PATCH /detalleProducto/toggleEnabled/:id
-router.patch('/toggleEnabled/:id', toggleHabilitadoDetProd)
+router.patch('/toggleEnabled/:id', authenticateToken, toggleHabilitadoDetProd)
 
 // POST /detalleProducto
 router.post('', authenticateToken, createDetalleProducto)

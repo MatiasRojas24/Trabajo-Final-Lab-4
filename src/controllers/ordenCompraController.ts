@@ -6,6 +6,152 @@ import { prismaDireccion } from "../models/direccion";
 import { error } from "console";
 import { connect } from "http2";
 
+
+
+export const getOrdenCompraById = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const orden = await prismaOrdenCompra.findUnique({
+        where: { id },
+        include: {
+            usuario: true,
+            direccion: true,
+            OrdenCompraDetalle: true,
+        },
+    });
+
+    if (!orden) {
+        res.status(404).json({ error: "Orden de compra no encontrada" });
+        return;
+    }
+
+    res.status(200).json(orden);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener la orden de compra" });
+    }
+};
+
+
+export const getOrdenesCompra = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const ordenes = await prismaOrdenCompra.findMany({
+        include: {
+            usuario: true,
+            direccion: true,
+            OrdenCompraDetalle: true,
+        },
+        });
+        res.status(200).json(ordenes);
+    } catch (error) {
+                res.status(500).json({ error: "Error al obtener las órdenes de compra" });
+    }
+};
+
+
+export const createOrdenCompra = async (req: Request, res: Response): Promise<void> => {
+        const { total, descuento, fechaCompra, usuarioId, direccionId } = req.body;
+
+        try {
+            const orden = await prismaOrdenCompra.create({
+            data: {
+                total,
+                descuento,
+                fechaCompra,
+                usuarioId,
+                direccionId,
+            },
+            });
+
+            res.status(201).json(orden);
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ error: "Error al crear la orden de compra" });
+        }
+};
+
+
+export const updateOrdenCompra = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const { total, descuento, fechaCompra, usuarioId, direccionId, habilitado } = req.body;
+
+    try {
+        const ordenActualizada = await prismaOrdenCompra.update({
+        where: { id },
+        data: {
+            total,
+            descuento,
+            fechaCompra,
+            usuarioId,
+            direccionId,
+            habilitado,
+        },
+        });
+
+        res.status(200).json(ordenActualizada);
+    } catch (error) {
+        res.status(500).json({ error: "Error al actualizar la orden de compra" });
+    }
+};
+
+
+export const deleteOrdenCompra = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        await prismaOrdenCompra.delete({
+        where: { id },
+    });
+
+    res.status(200).json({ mensaje: "Orden de compra eliminada correctamente" });
+    } catch (error) {
+        res.status(500).json({ error: "Error al eliminar la orden de compra" });
+    }
+};
+
+
+export const toggleHabilitadoOrdenCompra = async (req: Request, res: Response): Promise<void> => {
+        const { id } = req.params;
+
+    try {
+        const orden = await prismaOrdenCompra.findUnique({ where: { id } });
+
+        if (!orden) {
+        res.status(404).json({ error: "Orden de compra no encontrada" });
+        return;
+        }
+
+        const nuevaOrden = await prismaOrdenCompra.update({
+        where: { id },
+        data: { habilitado: !orden.habilitado },
+        });
+
+        res.status(200).json({ mensaje: "Estado de habilitado alternado correctamente", orden: nuevaOrden });
+    } catch (error) {
+        res.status(500).json({ error: "Error al alternar estado de habilitado" });
+    }
+};
+
+
+export const getEnabledOrdenDeCompra = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const ordenes = await prismaOrdenCompra.findMany({
+            where: { habilitado: true },
+        include: {
+            usuario: true,
+            direccion: true,
+            OrdenCompraDetalle: true,
+        },
+        });
+
+        res.status(200).json(ordenes);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener órdenes habilitadas" });
+    }
+};
+
+
+
 export const addUserOrdenCompra  = async (req: Request, res: Response): Promise<void> =>{
     const {ordenCompraId} = req.params;
     const { usuarioId } = req.body;

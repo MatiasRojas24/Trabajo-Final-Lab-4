@@ -13,9 +13,9 @@ import productoRoutes from "./routes/productoRoutes";
 import talleRoutes from "./routes/talleRoutes";
 import catalogoRoutes from "./routes/catalogoRoutes";
 
-import detalleProductoRoutes from './routes/detalleProductoRoutes'
-import imagenesRoutes from './routes/imagenRoutes'
-import descuentosRoutes from './routes/descuentoRoutes'
+import descuentoRoutes from "./routes/descuentoRoutes";
+import imagenRoutes from "./routes/imagenRoutes";
+import detalleProductoRoutes from "./routes/detalleProductoRoutes";
 
 dotenv.config();
 const app = express();
@@ -33,7 +33,8 @@ app.use("/productos", productoRoutes);
 app.use("/talles", talleRoutes);
 app.use('/detalleProducto', detalleProductoRoutes)
 app.use("/catalogos", catalogoRoutes);
-app.use('/imagenes', imagenesRoutes)
-
+app.use("/descuentos", descuentoRoutes);
+app.use("/imagenes", imagenRoutes);
+app.use("/detallesProducto", detalleProductoRoutes);
 
 export default app;
